@@ -1,0 +1,32 @@
+winlogbeat.event_logs:
+  - name: Application
+    ignore_older: 72h
+  - name: Security
+  - name: System
+
+fields:
+  token: {{ token }}
+  type: wineventlog
+fields_under_root: true
+
+processors:
+  - rename:
+      fields:
+        - from: "agent"
+          to: "beat_agent"
+      ignore_missing: true
+  - rename:
+      fields:
+        - from: "log.file.path"
+          to: "source"
+      ignore_missing: true
+  - rename:
+      fields:
+        - from: "log"
+          to: "log_information"
+      ignore_missing: true
+
+output.logstash:
+  hosts: ["logs.itdw.io:5044"]
+  ssl:
+    certificate_authorities: ['$certFile']
