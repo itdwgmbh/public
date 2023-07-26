@@ -3,13 +3,15 @@ jobs:
 - name: Publish Site
   steps:
   - !PublishArtifactStep
-    name: winlogbeat
-    artifacts: winlogbeat.yml
+    name: Publish Artifacts
+    artifacts: '*'
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PublishSiteStep
     name: Publish Site
     artifacts: '*'
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  triggers:
+  - !BranchUpdateTrigger {}
   retryCondition: never
   maxRetries: 3
   retryDelay: 30
