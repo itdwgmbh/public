@@ -1,0 +1,18 @@
+server_url: https://logs.itdw.io/api/
+server_api_token: {{graylogToken}}
+update_interval: 10
+tls_skip_verify: false
+send_status: true
+list_log_files:
+node_id: {{computername}}
+collector_id: file:C:\Program Files\Graylog\sidecar\collector-id
+cache_path: C:\Program Files\Graylog\sidecar\cache
+log_path: C:\Program Files\Graylog\sidecar\logs
+log_rotation_time: 86400
+log_max_age: 604800
+tags: [windows]
+backends:
+    - name: winlogbeat
+      enabled: true
+      binary_path: C:\Program Files\Graylog\sidecar\winlogbeat.exe
+      configuration_path: C:\Program Files\Graylog\sidecar\generated\winlogbeat.yml
