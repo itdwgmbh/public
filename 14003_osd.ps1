@@ -1,5 +1,3 @@
-Import-Module OSDN -Force
-
 # Customize GUI
 $OSDModuleResource.StartOSDCloudGUI.BrandName = 'EIfER'
 $OSDModuleResource.StartOSDCloudGUI.updateFirmware = $true
