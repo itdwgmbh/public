@@ -23,4 +23,4 @@
         state: latest
 
     - name: Start Tailscale
-      ansible.builtin.command: sudo tailscale up
+      ansible.builtin.command: tailscale login --authkey={{ token }}
