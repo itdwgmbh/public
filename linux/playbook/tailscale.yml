@@ -3,6 +3,9 @@
   hosts: localhost
   become: yes
 
+  vars:
+    token: "YOUR_TAILSCALE_AUTH_TOKEN"  # Replace with the actual token
+
   tasks:
     - name: Add Tailscale repository keyring
       ansible.builtin.apt_key:
