@@ -1,0 +1,26 @@
+---
+- name: Configure Tailscale
+  hosts: localhost
+  become: yes
+
+  tasks:
+    - name: Add Tailscale repository keyring
+      ansible.builtin.apt_key:
+        url: https://pkgs.tailscale.com/stable/debian/bookworm.noarmor.gpg
+        state: present
+        keyring: /usr/share/keyrings/tailscale-archive-keyring.gpg
+
+    - name: Add Tailscale repository
+      ansible.builtin.apt_repository:
+        filename: tailscale.list
+        repo: "deb [signed-by=/usr/share/keyrings/tailscale-archive-keyring.gpg] https://pkgs.tailscale.com/stable/debian/bookworm.tailscale-keyring.list {{ ansible_distribution_release }} main"
+        state: present
+
+    - name: Install Tailscale and update APT cache
+      ansible.builtin.apt:
+        name: tailscale
+        update_cache: yes
+        state: latest
+
+    - name: Start Tailscale
+      ansible.builtin.command: sudo tailscale up
