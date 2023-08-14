@@ -32,4 +32,4 @@
         state: latest
 
     - name: Start Tailscale
-      ansible.builtin.command: tailscale login --authkey={{ token }} --accept-routes
+      ansible.builtin.command: tailscale login --authkey={{ token }} --accept-routes --ssh
