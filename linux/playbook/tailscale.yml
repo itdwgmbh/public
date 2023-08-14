@@ -7,6 +7,13 @@
     token: "YOUR_TAILSCALE_AUTH_TOKEN"  # Replace with the actual token
 
   tasks:
+    - name: Install curl and gnupg (prerequisites)
+      ansible.builtin.apt:
+        name:
+          - curl
+          - gpg      
+        state: latest
+        
     - name: Add Tailscale repository keyring
       ansible.builtin.apt_key:
         url: https://pkgs.tailscale.com/stable/debian/bookworm.noarmor.gpg
