@@ -1,0 +1,51 @@
+---
+- name: Install Caddy web server
+  hosts: localhost
+  become: yes
+  
+  tasks:
+    - name: Install required packages
+      apt:
+        name: 
+          - debian-keyring
+          - debian-archive-keyring
+          - apt-transport-https
+          - curl
+        state: present
+    
+    - name: Add Caddy APT GPG key
+      apt_key:
+        url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
+        state: present
+    
+    - name: Add Caddy APT repository
+      apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/caddy-stable-archive-keyring.gpg] https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt stable main"
+        state: present
+    
+    - name: Update APT cache
+      apt:
+        update_cache: yes
+    
+    - name: Install Caddy package
+      apt:
+        name: caddy
+        state: latest  # Use "present" if you want to install the currently available version
+    
+    - name: Start and enable Caddy service
+      systemd:
+        name: caddy
+        state: started
+        enabled: yes
+    
+    - name: Check if /etc/default/tailscaled exists
+      stat:
+        path: /etc/default/tailscaled
+      register: tailscaled_file
+    
+    - name: Configure TS_PERMIT_CERT_UID if /etc/default/tailscaled exists
+      lineinfile:
+        path: /etc/default/tailscaled
+        regexp: '^TS_PERMIT_CERT_UID='
+        line: 'TS_PERMIT_CERT_UID=caddy'
+      when: tailscaled_file.stat.exists
