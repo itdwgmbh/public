@@ -1,4 +1,4 @@
-server_url: https://logs.itdw.io/api/
+server_url: https://itdw-srv-graylog-01.tailc6b0d.ts.net/api/
 server_api_token: {{graylogToken}}
 update_interval: 10
 tls_skip_verify: false
