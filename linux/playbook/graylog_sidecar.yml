@@ -1,0 +1,65 @@
+---
+- hosts: localhost
+  become: yes  # This is used to run tasks as sudo
+  vars:
+    graylog_api_token: "YOUR_API_TOKEN_HERE"  # <-- Define your API token here
+  tasks:
+    - name: Download graylog-sidecar package
+      get_url:
+        url: https://packages.graylog2.org/repo/packages/graylog-sidecar-repository_1-5_all.deb
+        dest: /tmp/graylog-sidecar-repository_1-5_all.deb
+
+    - name: Install graylog-sidecar package
+      apt:
+        deb: /tmp/graylog-sidecar-repository_1-5_all.deb
+
+    - name: Update and install graylog-sidecar
+      apt:
+        name: graylog-sidecar
+        update_cache: yes
+        state: latest
+
+    # Add Elastic repository and install Filebeat
+    - name: Install apt-transport-https package
+      apt:
+        name: apt-transport-https
+        state: present
+
+    - name: Add Elastic's signing key
+      apt_key:
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        state: present
+
+    - name: Add Elastic APT repository
+      apt_repository:
+        repo: "deb https://artifacts.elastic.co/packages/7.x/apt stable main"
+        state: present
+
+    - name: Install Filebeat
+      apt:
+        name: filebeat
+        update_cache: yes
+        state: latest
+
+    # Edit server_api_token in sidecar.yml using the variable
+    - name: Replace server_api_token in /etc/graylog/sidecar/sidecar.yml
+      lineinfile:
+        path: /etc/graylog/sidecar/sidecar.yml
+        regexp: '^server_api_token:'
+        line: "server_api_token: \"{{ graylog_api_token }}\""
+
+    # Uncomment node_id line in sidecar.yml
+    - name: Uncomment node_id in /etc/graylog/sidecar/sidecar.yml
+      lineinfile:
+        path: /etc/graylog/sidecar/sidecar.yml
+        regexp: '^#node_id: "file:/etc/graylog/sidecar/node-id"'
+        line: 'node_id: "file:/etc/graylog/sidecar/node-id"'
+
+    - name: Install graylog-sidecar service
+      command: graylog-sidecar -service install
+
+    - name: Enable and start graylog-sidecar service
+      systemd:
+        name: graylog-sidecar
+        enabled: yes
+        state: started
