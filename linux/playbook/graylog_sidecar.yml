@@ -41,6 +41,13 @@
         update_cache: yes
         state: latest
 
+    # Edit server_url in sidecar.yml
+    - name: Update server_url in /etc/graylog/sidecar/sidecar.yml
+      lineinfile:
+        path: /etc/graylog/sidecar/sidecar.yml
+        regexp: '^#?server_url:'
+        line: 'server_url: "https://itdw-srv-graylog-01.tailc6b0d.ts.net"'
+
     # Edit server_api_token in sidecar.yml using the variable
     - name: Replace server_api_token in /etc/graylog/sidecar/sidecar.yml
       lineinfile:
